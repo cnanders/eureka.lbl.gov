@@ -66,7 +66,7 @@ angular.module('book1')
       	}
       	*/
     });
-	$urlRouterProvider.when('','/home'); // Redirect
+	$urlRouterProvider.when('/','/home'); // Redirect
 	$urlRouterProvider.when('/proceedings', '/proceedings/2015'); // Redirect
 	$urlRouterProvider.otherwise('');
 });
