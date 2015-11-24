@@ -13,7 +13,7 @@
 						ng-class="{
 							'active': year.selected
 						}" 
-						href="#proceedings/{{ year.name }}">{{ year.name }}</a>
+						ng-click="$state.go('app.proceedings.year', { 'year': year.name })">{{ year.name }}</a>
 				</li>
 			  </ul>
 			</div>

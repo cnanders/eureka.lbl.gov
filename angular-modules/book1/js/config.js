@@ -8,7 +8,7 @@ angular.module('book1')
 
   	//$logProvider.debugEnabled(false); // Disable $log.debug() method
 
-	//$locationProvider.html5Mode(true);
+	$locationProvider.html5Mode(true);
 
 	$stateProvider	
 	.state('app', {
