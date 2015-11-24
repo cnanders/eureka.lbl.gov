@@ -1,0 +1,41 @@
+body{
+    
+    padding: 0;
+    margin: 0;
+    line-height: 1.5 !important;
+    
+    p {
+		-webkit-margin-before: 1.2em;
+		-webkit-margin-after: 1.2em;
+	}
+	
+	color: #555;
+	
+	//font-family: 'pt_serif', serif;
+	
+	/*
+	font-size: 18px;
+	
+	@media only screen and (min-width: 768px){
+		font-size: 20px;
+	}
+	
+	@media only screen and (min-width: 992px) {
+		font-size: 22px;
+	}
+	*/
+	
+}
+
+
+
+
+body.body-login {
+	background: #eaeaea;
+}
+
+body.body-form-2 {
+	background: #ddd;
+}
+
+

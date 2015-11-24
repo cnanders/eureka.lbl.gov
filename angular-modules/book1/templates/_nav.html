@@ -1,0 +1,54 @@
+<nav class="navbar navbar-light bg-faded">
+
+	<!--<div class="container">-->
+		
+		<!-- Mobile (toggle)-->
+		<div class="row hidden-sm-up">
+			<div class="col-xs-12 col-nopad-l">
+				<button class="navbar-toggler" 
+						type="button" 
+						ng-click="toggleNav()">
+					&#9776;
+				</button>
+			</div>			
+		</div>
+		
+		<!-- Mobile (un-collapsed nav) -->
+		<div 	class="row hidden-sm-up"
+				ng-if="!navCollapse"
+				ng-click="toggleNav()">
+			<div class="col-xs-12">
+				<ul class="nav nav-pills nav-stacked nav-pills-underline">
+					<li class="nav-item">
+					<a class="nav-link" ng-click="go('app.home')">Home</a>
+				  </li>
+				  <li class="nav-item">
+					<a class="nav-link" href="#">2016 Meeting Details</a>
+				  </li>
+				  <li class="nav-item">
+					<a class="nav-link" ng-click="go('app.proceedings')">Proceedings</a>
+				  </li>
+				  
+				  
+				</ul>
+			</div>		
+		</div>
+		
+		<!-- Non-mobile -->
+		<div class="row hidden-xs-down">
+			<div class="col-xs-12">
+				<a class="navbar-brand" ng-click="go('app.home')">EUVL Symposium</a>
+				<button class="btn btn-primary-outline pull-right">2016 Meeting Details</button>
+			 
+			 <ul class="nav navbar-nav pull-right">
+				<li class="nav-item">
+					<a class="nav-link" ng-click="go('app.proceedings')">Proceedings</a>
+				</li>
+			  </ul>
+			  
+			</div>
+			
+		</div>
+		
+	<!--</div>-->
+</nav>

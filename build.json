@@ -1,0 +1,60 @@
+{
+   
+    "angular":{
+        "baseUrl":"/lib",
+        "css":[
+
+        ],
+        "js":[
+            "angular/angular.js"
+        ],
+        "depends":[
+        ]
+    },
+    "bootstrap":{
+        "baseUrl":"/lib/bootstrap-4.0.0-alpha/dist",
+        "css":[
+			"css/bootstrap.css"
+        ],
+        "js":[
+        ],
+        "depends":[
+        ]
+    },
+    "angular-ui-router":{
+        "baseUrl":"/lib/angular-ui-router/release",
+        "css":[
+
+        ],
+        "js":[
+            "angular-ui-router.js"
+        ],
+        "depends":[
+
+        ]
+    },
+    
+    "app":{
+        "baseUrl":"",
+        "css":[
+            "css/style.css"
+        ],
+        "js":[
+        ],
+        "depends":[
+        ]
+    },
+    "ng-book1":{
+        "baseUrl":"/angular-modules/book1/assets",
+        "css":[
+        ],
+        "js":[
+            "app.js"
+        ],
+        "depends":[
+        	"angular",
+            "angular-ui-router",
+            "bootstrap"
+        ]
+    }
+}

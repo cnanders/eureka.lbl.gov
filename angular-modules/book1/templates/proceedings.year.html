@@ -1,0 +1,36 @@
+<div class="container book">
+		<div class="row">
+			<div class="col-md-10 col-md-offset-1 
+						col-lg-8 col-lg-offset-2">
+			  <ul class="inline-block">
+				<li ng-repeat="year in years"
+					class=""
+					ng-class="{
+						'active': year.selected
+					}"
+					ng-click="selectYear(year)">
+					<a 	class=""
+						ng-class="{
+							'active': year.selected
+						}" 
+						href="#proceedings/{{ year.name }}">{{ year.name }}</a>
+				</li>
+			  </ul>
+			</div>
+		</div>
+	</div>
+
+<!-- Proceedings content -->
+<div class="container book">
+	<div class="row row-bottom">
+		<div class="col-md-10 col-md-offset-1 
+					col-lg-8 col-lg-offset-2">
+			<!-- 
+			This uses a controller that is set in config as a function that
+			sets a scope variable called year 
+			-->
+			
+			<ng-include src="'templates/' + year + '.html'"></ng-include>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,50 @@
+table.ellipsis {
+
+	/* 
+	The following code confines the text of each td and th to one line and abbreviates
+	the text with ellipsis if it is too long for one line.  The ellipsis dynamically
+	change as the width of the viewport changes.  So awesome.
+	http://stackoverflow.com/questions/9789723/css-text-overflow-in-a-table-cell
+	http://stackoverflow.com/questions/5932018/fluid-table-with-td-nowrap-text-overflow
+	*/
+	
+	width: 100%;
+	table-layout: fixed;
+	
+	td, th {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		text-align: left;
+	}
+}
+
+table.test {
+	td, th {
+		a {
+			color: #333;
+			border-bottom: 1px solid #ddd;
+			-webkit-transition: all .2s ease-in-out;
+			-moz-transition: all .2s ease-in-out;
+			transition: all .2s ease-in-out;
+		}
+		color: #ccc;
+	
+		a:hover {
+			border-bottom: 1px solid #333;
+			text-decoration: none;
+		}	
+	}
+	
+	td:first-child {
+		padding-right: 20px;
+		width: 80%;
+	}
+	td:last-child {
+		text-align: right;
+		width: 20%;
+	}
+	td {
+		padding-bottom: 0.5em;
+	}
+}
