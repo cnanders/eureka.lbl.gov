@@ -32,7 +32,12 @@
 			
 			<ng-include src="'templates/' + year + '.html'"></ng-include>
 			
-			<p>Download all <a target="_self" href="/pdf/{{ year }}.zip">{{ year }}.zip</a></p>
+			<div ng-if="year !== '2015'">
+				<p>Download all <a target="_self" href="/pdf/{{ year }}.zip">{{ year }}.zip</a></p>
+			</div>
+			<div ng-if="year === '2015'">
+				<p>Download all <a target="_self" href="/pdf/2015/{{ year }}.zip">{{ year }}.zip</a></p>
+			</div>
 
 		</div>
 	</div>
