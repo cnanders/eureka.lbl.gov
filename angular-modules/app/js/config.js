@@ -89,6 +89,9 @@ angular.module('app')
 
 	// Need to use '/' as first arg of when() in HTML5 mode but this/
 	// does not work on Github Pages so I'm using non HTML5 mode
+
+	// Also I think the <base href="/"> needs to be set in index.html
+
 	$urlRouterProvider.when('','/home'); // Redirect
 	$urlRouterProvider.otherwise('');
 });
