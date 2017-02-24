@@ -1,5 +1,16 @@
 {
-   
+
+  "jquery":{
+      "baseUrl":"/lib",
+      "css":[
+
+      ],
+      "js":[
+          "jquery/dist/jquery.js"
+      ],
+      "depends":[
+      ]
+  },
     "angular":{
         "baseUrl":"/lib",
         "css":[
@@ -17,8 +28,10 @@
 			"css/bootstrap.css"
         ],
         "js":[
+          "js/bootstrap.js"
         ],
         "depends":[
+            "jquery"
         ]
     },
     "angular-ui-router":{
@@ -33,20 +46,10 @@
 
         ]
     },
-    
-    "app":{
-        "baseUrl":"",
+    "ng-app":{
+        "baseUrl":"/angular-modules/app/build",
         "css":[
-            "css/style.css"
-        ],
-        "js":[
-        ],
-        "depends":[
-        ]
-    },
-    "ng-book1":{
-        "baseUrl":"/angular-modules/book1/assets",
-        "css":[
+            "style.css"
         ],
         "js":[
             "app.js"

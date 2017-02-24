@@ -1,0 +1,85 @@
+nav.navbar.navbar-eureka {
+	background-color: $color_secondary;
+	a.nav-link {
+		color: #ccc;
+	}
+	a.nav-link:hover {
+		color: #aaa;
+	}
+	a.a-eureka-logo{
+		img {
+			height: 30px;
+			width: 145px;
+		}
+	}
+
+	button.navbar-toggler {
+		color: #ccc;
+		padding-right: 0px;
+	}
+	button.navbar-toggler:hover {
+		color: #aaa;
+	}
+}
+
+
+nav.navbar {
+	/*
+	padding-left: 0px;
+	padding-right: 0px;
+	*/
+}
+
+
+ul.nav.navbar-nav {
+
+
+
+	li.nav-item {
+    	margin-right: 1rem;
+    	margin-left: 0;
+    }
+  li.nav-item.active {
+  	a {
+  		text-decoration: underline;
+  		color: inherit;
+  	}
+  }
+
+	li.nav-item.nav-item-right {
+		margin-left: 1.5rem;
+		margin-right: 0;
+		text-align: right;
+	}
+}
+
+ul.navbar-nav-center {
+	float: none;
+	display: block;
+	li.nav-item {
+		float: none;
+		display: inline-block;
+	}
+}
+
+
+.navbar-light {
+	border-bottom: 1px solid #ddd;
+	border-top: 1px solid #ddd;
+}
+
+ul.nav-pills-underline {
+	li.nav-item {
+		border-bottom: 1px solid #ddd;
+	}
+}
+
+ul.nav-pills-underline-right {
+	li.nav-item {
+		text-align: right;
+		border-bottom: 1px solid #333;
+		a {
+			padding-right: 0px;
+		}
+	}
+}

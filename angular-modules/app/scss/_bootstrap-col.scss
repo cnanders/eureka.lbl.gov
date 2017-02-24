@@ -1,0 +1,58 @@
+
+
+
+
+.col-nopadding {
+	padding: 0 !important;
+  	 margin: 0 !important;
+}
+
+.col-nopad-l {
+	padding-left: 0;
+	margin-left: 0;
+}
+
+.col-nopad-r {
+	padding-right: 0;
+	margin-right: 0;
+}
+
+.col-no-pad-l {
+	padding-left: 0;
+	margin-left: 0;
+}
+
+.col-no-pad-r {
+	padding-right: 0;
+	margin-right: 0;
+}
+
+
+
+@media only screen and (max-width: 33.99em){ // xs only
+	[class*="col-sm"],
+	[class*="col-md"],
+	[class*="col-lg"] {
+		margin-bottom: 0.94rem;
+	}
+}
+
+@media only screen and (max-width: 47.99em){ // xs, sm only
+
+	// Applies to col-md-*
+	// Applies to col-lg-*
+	[class*="col-md"],
+	[class*="col-lg"] {
+		margin-bottom: 0.94rem;
+	}
+}
+
+@media only screen and (max-width: 61.99em){ // xs, sm, md only
+	[class*="col-lg"] {
+		margin-bottom: 0.94rem;
+	}
+}
+
+@media only screen and (max-width: 74.99em){ // xs, sm, md, lg only
+
+}

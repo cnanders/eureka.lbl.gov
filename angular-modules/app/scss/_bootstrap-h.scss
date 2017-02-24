@@ -1,0 +1,113 @@
+/* Browser defaults are shown.  Can scale up with ratio */
+
+h1, h2, h3, h4, h5, h6 {
+	margin-top: 0.4em;
+	margin-bottom: 0.4em;
+	color: $color_secondary;
+	font-weight: 700;
+	line-height: 1.5;
+	font-family: 'bebas_neue_regular', sans-serif;
+	//font-family: 'intel-clear-headline', sans-serif;
+	letter-spacing: 0.03em;
+}
+
+/*
+h1 {
+	font-size: 1.8em !important;
+}
+h2 {
+	font-size: 1.45em !important;
+}
+h3 {
+	font-size: 1.15em !important;
+}
+h4 {
+	font-size: 1em !important;
+}
+*/
+
+$font_scale: 1.0;
+
+h1 {
+	font-size: $font_scale * 2em !important;
+}
+h2 {
+	font-size: $font_scale * 1.7em !important;
+}
+h3 {
+	font-size: $font_scale * 1.45em !important;
+}
+h4 {
+	font-size: $font_scale * 1.22em !important;
+}
+h5 {
+	font-size: $font_scale * 1em !important;
+}
+
+
+@media only screen and (min-width: 0em){ // xs
+
+
+}
+
+@media only screen and (min-width: 34em){ // sm
+	//padding-top: 10px;
+}
+
+@media only screen and (min-width: 48em){ // md
+	h1, h2, h3, h4 {
+		margin-top: 0.5em;
+		margin-bottom: 0.5em;
+	}
+
+	$font_scale: 1.2;
+
+	h1 {
+		font-size: $font_scale * 2em !important;
+	}
+	h2 {
+		font-size: $font_scale * 1.7em !important;
+	}
+	h3 {
+		font-size: $font_scale * 1.45em !important;
+	}
+	h4 {
+		font-size: $font_scale * 1.22em !important;
+	}
+	h5 {
+		font-size: $font_scale * 1em !important;
+	}
+
+
+
+}
+
+@media only screen and (min-width: 62em){ // lg
+	padding-top: 40px;
+}
+
+@media only screen and (min-width: 75em){ // xl
+
+}
+
+
+
+
+
+h1.tight-top,
+h2.tight-top,
+h3.tight-top,
+h4.tight-top,
+h5.tight-top,
+h6.tight-top {
+	margin-top: 0px;
+}
+
+h1.h1-thin,
+h2.h2-thin,
+h3.h3-thin,
+h4.h4-thin,
+h5.h5-thin,
+h6.h6-thin {
+	font-weight: 400;
+}

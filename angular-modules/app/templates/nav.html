@@ -1,0 +1,115 @@
+
+
+<nav class="navbar navbar-eureka navbar-fixed-top">
+
+	<div class="container">
+
+		<!-- Mobile (toggle)-->
+		<div class="row hidden-md-up">
+
+			<div class="col-xs-8 col-nopad-l">
+				<a class="navbar-brand a-eureka-logo"
+						ng-click="changeState('app.home')">
+					<img 	src="img/eureka-logo-01.svg"
+								alt="EUREKA logo">
+				</a>
+			</div>
+
+			<div class="col-xs-4 text-right col-nopad-r">
+				<button class="navbar-toggler"
+						type="button"
+						ng-click="toggleNav()">
+					&#9776;
+				</button>
+			</div>
+
+		</div>
+
+		<!-- Mobile (un-collapsed nav) -->
+		<div 	class="row hidden-sm-up"
+				ng-if="!navCollapse"
+				ng-click="toggleNav()">
+			<div class="col-xs-12 col-nopad-l col-nopad-r">
+				<ul class="nav nav-pills nav-stacked nav-pills-underline-right">
+					<li class="nav-item">
+						<a class="nav-link"
+								ng-click="changeState('app.euv-lithography')">
+								EUV Lithography</a>
+				  </li>
+
+					<li class="nav-item">
+						<a class="nav-link"
+						ng-click="changeState('app.euv-mask-inspection')">
+								EUV Mask Inspection</a>
+				  </li>
+
+					<li class="nav-item">
+						<a class="nav-link"
+						ng-click="changeState('app.reflectometry')">
+							 Reflectometry & Scatterometry</a>
+				  </li>
+
+					<li class="nav-item">
+						<a class="nav-link"
+						ng-click="changeState('app.aap')">
+							 Academic Access Program</a>
+				  </li>
+
+
+
+
+				</ul>
+			</div>
+		</div>
+
+		<!-- Non-mobile -->
+		<div class="row hidden-sm-down">
+			<div class="col-xs-12 text-center">
+
+				<a class="navbar-brand a-eureka-logo"
+						ng-click="changeState('app.home')">
+					<img 	src="img/eureka-logo-01.svg"
+								alt="EUREKA logo">
+				</a>
+				<ul class="nav navbar-nav pull-right">
+
+					<li class="nav-item nav-item-right dropdown">
+				    <a class="nav-link dropdown-toggle"
+								data-toggle="dropdown"
+								href="#"
+								role="button"
+								aria-haspopup="true"
+								aria-expanded="false">Facilities</a>
+				    <div class="dropdown-menu">
+				      <a class="dropdown-item"
+									ng-click="changeState('app.euv-lithography')">
+									EUV Lithography</a>
+							<a class="dropdown-item"
+									ng-click="changeState('app.euv-mask-inspection')">
+									EUV Mask Inspection</a>
+				      <a class="dropdown-item"
+									ng-click="changeState('app.reflectometry')">
+									Reflectometry & Scatterometry</a>
+
+
+				    </div>
+				  </li>
+
+					<li class="nav-item nav-item-right">
+						<a 	class="nav-link"
+								ng-click="changeState('app.aap')">
+							Academic Access Program</a>
+					</li>
+
+					<li class="nav-item nav-item-right">
+						<a 	class="nav-link"
+								ng-click="changeState('app.contact')">
+							Contact</a>
+					</li>
+				</ul>
+
+			</div>
+
+		</div>
+	</div>
+</nav>

@@ -1,0 +1,15 @@
+.btn.btn-primary {
+	background-color: $color_primary_1;
+	border: none;
+}
+a.btn.btn-primary:hover {
+	background-color: $color_primary_1_hover;
+	border: none;
+	cursor: pointer;
+}
+
+.btn.btn-material {
+	border-radius: 0px;
+	font-family: 'bebas_neue_regular', sans-serif;
+
+}

@@ -1,0 +1,27 @@
+/* style.scss */
+
+/*
+Make sure to kill ionic reset and typography.  This is important for paragraph and
+header spacing, alphabetical <ul> and a few other things
+*/
+
+@import "vars";
+@import "fonts";
+@import "body";
+
+
+@import "bg";
+@import "a";
+@import "p";
+@import "div";
+
+@import "bootstrap-row";
+@import "bootstrap-h";
+@import "bootstrap-navbar";
+@import "bootstrap-col";
+@import "bootstrap-container";
+@import "bootstrap-btn";
+@import "bootstrap-card";
+@import "img";
+@import "table";
+@import "ul";

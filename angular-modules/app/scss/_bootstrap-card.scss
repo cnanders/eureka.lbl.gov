@@ -1,0 +1,15 @@
+.card.card-material {
+	background-color: #eee;
+	border: none;
+	border-radius: 0px;
+	padding: 20px;
+
+	@media only screen and (min-width: 768px){
+		padding: 20px;
+	}
+
+	@media only screen and (min-width: 992px) {
+		padding: 30px;
+	}
+
+}

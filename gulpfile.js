@@ -1,248 +1,49 @@
 'use strict';
 
-// Include gulp
-var gulp       	= require('gulp')
-
-// Include plugins
-
-// Utilities
-var concat     	= require('gulp-concat');
-var plumber    	= require('gulp-plumber');
-var sourcemaps 	= require('gulp-sourcemaps');
-var rename 		= require('gulp-rename');
-var notify 		= require("gulp-notify");
-var addsrc 		= require('gulp-add-src');
+var gulp = require('gulp')
+var plugins = require('gulp-load-plugins')();
 var runSequence = require('run-sequence');
-var compress 	= require('gulp-yuicompressor');
-var fs 			= require('fs');
-var size 		= require('gulp-size');
+var fs = require('fs');
 
-
-// Scripts
-var uglify     	= require('gulp-uglify');
-var jshint 		= require('gulp-jshint');
-var gzip 		= require('gulp-gzip');
-
-// Sass
-//var sass 		= require('gulp-ruby-sass');
-var sass 		= require('gulp-sass');
-var minifycss 	= require('gulp-minify-css');
-
-// Angular
-var html2js 		= require('gulp-html2js');    // Had problems with this not creating single module
-var ngHtml2Js 		= require('gulp-ng-html2js');
-var minifyHtml 		= require("gulp-minify-html");
-var ngAnnotate 		= require('gulp-ng-annotate');
-var templateCache 	= require('gulp-angular-templatecache');
-
-var jshintConfig = {
-	asi: true,  	// Omit "missing semicolon" warning
-	globals: {
-		$: true,
-		angular: true,
-		swfFocus: true,
-		swfIsReady: true,
-		swfobject: true,
-		loadXml: true,
-		csrfToken: true,
-		csrfTokenName: true,
-	},
-	browser: true  // This option defines globals exposed by modern browsers
-};
-
-var sassConfig = {
-	errLogToConsole: true,
-};
-
-
-var destAssets;
+var destBuild;
 var destJs;
-var defaultTasks = [];
+
+
+/**
+ * Angular modules are always pre-built.  This includes:
+ * 	- placing each .html template into the template cache (converts .html to .js)
+ * 	- concatenating all js files
+ * 	- running sass on all sass files
+ * 	- minifying single js and css file
+ * Only build/styles.min.css and build/app.min.js are included in main website pages
+ */
+
 
 var modules = [
-   'angular-modules/book1'
+	'angular-modules/app'
 ];
+moduleTasks = require('./gulp-tasks/ng-module-tasks')(gulp, plugins, modules)
 
-for (var n = 0; n < modules.length; n++) {
+/**
+ * !!!!!!!!!!! IMPORTANT !!!!!!!!!!!!!!!
+ * When you do the first build, important to run this first to populate the 
+ * build folder of each angular app
+ */
 
-	console.log('Adding tasks for module: ' + modules[n]);
-
-	// Need to use IIFE since the loop variable will have changed by the time the
-	// task callback executes
-	// http://stackoverflow.com/questions/22968516/creating-tasks-using-a-loop-gulp
-
-	(function(module) {
-
-		destAssets = module + '/assets';
-
-		// Lint Task
-		gulp.task(module + '-lint', function() {
-
-			// All descendant folders with .js files
-			console.log(module + '/js/**/*.js');
-
-			return gulp.src(module + '/js/**/*.js')
-				.pipe(jshint(jshintConfig))
-				.pipe(jshint.reporter('default'))
-				//.pipe(notify({ message: module + ' lint task complete' }));
-		});
-
-		// Build multi .run() commands for the angular module that place each .html file
-		// into the template cache of the module.  ngHtml2Js does this by generating JS
-		// code that evokes the .run()
-		// method of the module (whose name is set by the moduleName parameter).  So the
-		// module name here needs to be the name of the module
-		//
-		// The 'templates' and 'scripts' tasks need to execute synchronously since I want
-		// the 'scripts' task to include templates.js in the concatenated and minified
-		// script.  All that is required is to pass a task dependency into the 'scripts'
-		// task as discussed in the documentation here
-		//
-		// https://github.com/gulpjs/gulp/blob/master/docs/recipes/running-tasks-in-series.md
-		//
-		// It is important to write this file to a location that is not watched by the
-		// scripts task, otherwise it gets into an infinite loop.  The solution is to
-		// write it to templates/cache.js.  Originally I was writing to js, however the
-		// watch for the scripts would see this file get written and
+// gulp.task('default', function() {
+// 	runSequence(
+// 		moduleTasks
+// 	);
+// });
+// return;
 
 
-		gulp.task(module + '-templates', function () {
-
-
-
-			return gulp.src([
-			    module + "/templates/**/*.html",
-			    module + "/templates/**/*.json",
-			])
-				.pipe(minifyHtml({
-					empty: true,
-					spare: true,
-					quotes: true
-				}))
-				.pipe(templateCache('cache.js', {
-					module: module.split("/").pop(),
-					root: 'templates/',
-				}))
-        .pipe(gulp.dest(module + '/templates'));
-
-
-			/*
-			return gulp.src([module + "/templates/*.html"])
-				.pipe(minifyHtml({
-					empty: true,
-					spare: true,
-					quotes: true
-				}))
-				.pipe(ngHtml2Js({
-					moduleName: module,
-					prefix: "templates/",
-					declareModule: false
-				}))
-				.pipe(concat("cache.js")) 			// concatenate as templates.js
-				//.pipe(uglify())					// compress (no need because is is compressed with scripts task)
-				.pipe(gulp.dest(module + '/templates'))				// write to templates/all.js
-				//.pipe(notify({ message: module + ' templates task complete' }));
-		 	*/
-		});
-
-		// Concatenate & minify scripts.
-		// This task has a dependency on the templates task (see above).
-		// For Angular, it is important that the module.js scripts are ordered first
-		// in the concatenation  because they contain the constructors of the Angular
-		// modules
-
-		gulp.task(module + '-scripts', function () {
-
-			// All descendant folders with .js files
-			// Make sure any files named module appear first (for Angular)
-			// If this task is executed after templates, it will include templates.js
-
-			return gulp.src([module + '/js/**/module.js', module + '/js/**/*.js', module + '/templates/cache.js'])
-				//.pipe(sourcemaps.init())
-				.pipe(plumber())
-				.pipe(concat('app.js'))			// concatenate them all to a file named app.js
-				.pipe(ngAnnotate()) 			// fix angular dependency injection issue
-				.pipe(gulp.dest(destAssets)) 		// write app.js to assets/app.js
-				.pipe(rename({suffix: '.min'}))
-				.pipe(uglify()) 				// uglify
-				//.pipe(sourcemaps.write())
-				.pipe(gulp.dest(destAssets)) 		// write app.min.js to assets/app.min.js
-				//.pipe(notify({ message: module + ' scripts task complete' }))
-		});
-
-		gulp.task(module + '-templates-and-scripts', function() {
-		  	runSequence(module + '-templates', module + '-scripts');
-		});
-
-		// Compile Our Sass
-		gulp.task(module + '-sass', function() {
-
-			return gulp.src([module + '/scss/style.scss'])
-				//.pipe(plumber())
-				.pipe(sass(sassConfig))
-				.pipe(gulp.dest(destAssets))
-				.pipe(rename({suffix: '.min'}))
-				.pipe(minifycss())
-				.pipe(gulp.dest(destAssets))
-				//.pipe(notify({ message: module + ' sass task complete' }));
-		});
-
-
-		//gulp.task(module + '-templates-and-scripts', [module + '-booyah', module + '-scripts']);
-
-		// Watch Files For Changes
-		gulp.task(module + '-watch', function() {
-
-			// Watch .js files; run lint, then scripts tasks
-			gulp.watch(module + '/js/**/*.js', [module + '-lint', module + '-templates-and-scripts']);
-
-			// Watch .scss files; run sass task
-			gulp.watch(module + '/scss/*.scss', [module + '-sass']);
-
-			// Watch .html files; run templates task and scripts task (to concatenate
-			// new cache.js to the js code
-			gulp.watch(module + '/templates/**/*.html', [module + '-templates-and-scripts']);
-		});
-
-
-    // Define a sequence task for the angular module
-
-		gulp.task(module + '-sequence', function() {
-      runSequence(
-        module + '-lint',
-        module + '-templates',
-        module + '-scripts',
-        module + '-sass'
-        //modules[n] + '-watch',
-      );
-    });
-
-
-
-	})(modules[n]);
-
-
-  //defaultTasks.push(modules[n] + '-sequence');
-
-  defaultTasks.push(modules[n] + '-lint');
-	defaultTasks.push(modules[n] + '-templates-and-scripts');
-	defaultTasks.push(modules[n] + '-scripts');
-	defaultTasks.push(modules[n] + '-sass');
-	defaultTasks.push(modules[n] + '-watch');
-
-}
-
-// Default Task
-//gulp.task('default', defaultTasks);
-//return;
 
 var packageJson = 'build.json';
-var destJs = 'assets/js';
-var destCss = 'assets/css';
+var destJs = 'build/js';
+var destCss = 'build/css';
 var packages; // populated by task "load-json"
-var ignore = [
-  "test"
-];
+var ignore = ["test"];
 var assets = {
 	js: {
 		libs: [],
@@ -256,14 +57,16 @@ var assets = {
 
 /**
  * Check if the asset is a library asset (lib, bower_components)
- * @param {String} path - the abs path of the file w.r.t the webroot i.e.,
- * /angular/band/assets/app.js
+ * @param {String} path - path relative to gulpfile.js
+ * /angular/band/build/app.js
  * @returns {Boolean}
  */
 
 var isLib = function(path) {
-	var libPrefix = "lib";
-	var bowerPrefix = "bower_components"
+
+	var root = "";
+	var libPrefix = root + "lib";
+	var bowerPrefix = root + "bower_components"
 	if (path.substring(0, libPrefix.length) === libPrefix ||
 		path.substring(0, bowerPrefix.length) === bowerPrefix) {
 		return true;
@@ -273,12 +76,14 @@ var isLib = function(path) {
 }
 
 var isExternal = function(path) {
-	var prefix = "//"
-	if (path.substring(0, prefix.length) === prefix) {
-		return true;
-	} else {
-		return false;
+	//var prefix = "//"
+	var prefix = ["//", "http://", "https://"];
+	for (var n = 0; n < prefix.length; n++) {
+		if (path.substring(0, prefix[n].length) === prefix[n]) {
+			return true;
+		}
 	}
+	return false;
 }
 
 /**
@@ -290,13 +95,19 @@ var isExternal = function(path) {
  */
 
 var relPath = function(path) {
+
+	var root = "";
 	var prefix = "/";
-	var externalPrefix = "//";
-	if (path.substring(0, externalPrefix.length) === externalPrefix) {
-		return path;
-	} else {
-		return path.substring(prefix.length, path.length);
+	var externalPrefix = ["//", "https://", "http://"];
+	for (var n = 0; n < externalPrefix.length; n++) {
+		if (path.substring(0, externalPrefix[n].length) === externalPrefix[n]) {
+			return path;
+		}
 	}
+
+	// Prefix non-external with "app-src/"
+	return root + path.substring(prefix.length, path.length);
+
 }
 
 /**
@@ -311,6 +122,7 @@ var relPath = function(path) {
 
 var registerPackage = function(name) {
 
+	console.log(name);
 	// Don't register if is on ignore list
 	if (ignore.indexOf(name) !== -1) {
 		return;
@@ -440,27 +252,6 @@ logAssetSizes();
  * CSS
  */
 
-/*
-sassConfig = {
-	images_dir: "images",
-	javascripts_dir: "js",
-	output_style: "compressed",
-	environment: "production",
-	errLogToConsole: true,
-}
-gulp.task('css-custom', function () {
-	return gulp.src('sass/style.scss')
-
-		.pipe(sass(sassConfig))
-		.pipe(gulp.dest(destCss))
-		.pipe(rename({suffix: '.min'}))
-		.pipe(minifycss())
-		.pipe(gulp.dest(destCss))
-});
-defaultTasks.push('css-custom');
-*/
-
-
 /**
  * Concatenate all custom css files to one file and save as custom.js.  Run lint on all of
  * the js files.  Also create a minified version of the file, custom.min.js
@@ -468,11 +259,11 @@ defaultTasks.push('css-custom');
 
  gulp.task('css-custom', function () {
 	return gulp.src(assets.css.files)
-		.pipe(concat('custom.css'))			// concatenate them all to a file named app.js
+		.pipe(plugins.concat('custom.css'))			// concatenate them all to a file named app.js
 		.pipe(gulp.dest(destCss)) 						// write to assets
-		.pipe(rename({suffix: '.min'}))
-		.pipe(minifycss())
-		//.pipe(compress({
+		.pipe(plugins.rename({suffix: '.min'}))
+		.pipe(plugins.minifyCss())
+		//.pipe(plugins.compress({
         //    type: 'css'
         //}))
 		.pipe(gulp.dest(destCss))
@@ -486,11 +277,11 @@ defaultTasks.push('css-custom');
 
  gulp.task('css-libs', function () {
 	return gulp.src(assets.css.libs)
-		.pipe(concat('libs.css'))			// concatenate them all to a file named app.js
+		.pipe(plugins.concat('libs.css'))			// concatenate them all to a file named app.js
 		.pipe(gulp.dest(destCss)) 						// write to assets
-		.pipe(rename({suffix: '.min'}))
-		.pipe(minifycss())
-		//.pipe(compress({
+		.pipe(plugins.rename({suffix: '.min'}))
+		.pipe(plugins.minifyCss())
+		//.pipe(plugins.compress({
         //    type: 'css'
         //}))
 		.pipe(gulp.dest(destCss))
@@ -510,9 +301,9 @@ defaultTasks.push('css-custom');
 	];
 
 	return gulp.src(files)
-		.pipe(concat('libs-and-custom.css'))			// concatenate them all to a file named app.js
+		.pipe(plugins.concat('libs-and-custom.css'))			// concatenate them all to a file named app.js
 		.pipe(gulp.dest(destCss)) 						// write to assets
-		.pipe(size({
+		.pipe(plugins.size({
 			title: 'css/libs-and-custom.css'
 		}))
 });
@@ -530,29 +321,19 @@ gulp.task('css-libs-and-custom-min', function() {
 	];
 
 	return gulp.src(files)
-		.pipe(concat('libs-and-custom.min.css'))			// concatenate them all to a file named app.js
+		.pipe(plugins.concat('libs-and-custom.min.css'))			// concatenate them all to a file named app.js
 		.pipe(gulp.dest(destCss))
-		.pipe(size({
+		.pipe(plugins.size({
 			title: 'css/libs-and-custom.min.css'
 		}))
-		.pipe(gzip())
-		.pipe(gulp.dest(destCss))
-		.pipe(size({
-			title: 'css/libs-and-custom.min.css.gz'
-		}))
+		// .pipe(plugins.gzip())
+// 		.pipe(gulp.dest(destCss))
+// 		.pipe(plugins.size({
+// 			title: 'css/libs-and-custom.min.css.gz'
+// 		}))
 });
 
 
-
-/*
-gulp.task('css-sequence', function() {
-	runSequence(
-		'css-custom',
-		'css-libs',
-		'css-libs-and-custom'
-	);
-});
-*/
 
 /**
  * JS
@@ -565,13 +346,13 @@ gulp.task('css-sequence', function() {
 
 gulp.task('js-custom', function () {
 	return gulp.src(assets.js.files)
-		//.pipe(jshint(jshintConfig))
-		//.pipe(jshint.reporter('default'))
-		.pipe(plumber())
-		.pipe(concat('custom.js'))			// concatenate them all to a file named app.js
+		//.pipe(plugins.jshint(jshintConfig))
+		//.pipe(plugins.jshint.reporter('default'))
+		.pipe(plugins.plumber())
+		.pipe(plugins.concat('custom.js'))			// concatenate them all to a file named app.js
 		.pipe(gulp.dest(destJs)) 				// write to assets
-		.pipe(rename({suffix: '.min'}))
-		.pipe(uglify())
+		.pipe(plugins.rename({suffix: '.min'}))
+		.pipe(plugins.uglify())
 		.pipe(gulp.dest(destJs))
 });
 
@@ -582,11 +363,11 @@ gulp.task('js-custom', function () {
 
 gulp.task('js-libs', function () {
 	return gulp.src(assets.js.libs)
-		.pipe(plumber())
-		.pipe(concat('libs.js'))			// concatenate them all to a file named app.js
+		.pipe(plugins.plumber())
+		.pipe(plugins.concat('libs.js'))			// concatenate them all to a file named app.js
 		.pipe(gulp.dest(destJs)) 						// write to assets
-		.pipe(rename({suffix: '.min'}))
-		.pipe(uglify())
+		.pipe(plugins.rename({suffix: '.min'}))
+		.pipe(plugins.uglify())
 		.pipe(gulp.dest(destJs))
 });
 
@@ -601,10 +382,10 @@ gulp.task('js-libs-and-custom', function () {
 	];
 
 	return gulp.src(files)
-		.pipe(plumber())
-		.pipe(concat('libs-and-custom.js'))			// concatenate them all to a file named app.js
+		.pipe(plugins.plumber())
+		.pipe(plugins.concat('libs-and-custom.js'))			// concatenate them all to a file named app.js
 		.pipe(gulp.dest(destJs)) 					// write to assets
-		.pipe(size({
+		.pipe(plugins.size({
 			title: 'js/libs-and-custom.js'
 		}))
 });
@@ -623,55 +404,49 @@ gulp.task('js-libs-and-custom-min', function () {
 	];
 
 	return gulp.src(files)
-		.pipe(plumber())
-		.pipe(concat('libs-and-custom.min.js'))			// concatenate them all to a file named app.js
+		.pipe(plugins.plumber())
+		.pipe(plugins.concat('libs-and-custom.min.js'))			// concatenate them all to a file named app.js
 		.pipe(gulp.dest(destJs)) 					// write to assets
-		.pipe(size({
+		.pipe(plugins.size({
 			title: 'js/libs-and-custom.min.js'
 		}))
-		.pipe(gzip())
-		.pipe(gulp.dest(destJs)) 		// write app.js to assets/app.js
-		.pipe(size({
-			title: 'js/libs-and-custom.min.js.gz'
-		}))
+		// .pipe(plugins.gzip())
+// 		.pipe(gulp.dest(destJs)) 		// write app.js to build/app.js
+// 		.pipe(plugins.size({
+// 			title: 'js/libs-and-custom.min.js.gz'
+// 		}))
 });
 
-gulp.task('js-sequence', function() {
-	runSequence(
 
-	);
-});
 
 
 
 gulp.task('css-libs-size', function() {
-	/*
 	return gulp.src(assets.css.libs)
-	.pipe(size({
+	.pipe(plugins.size({
 		showFiles: true,
 		title: "css libs"
 	}))
-	*/
 });
 
 
 gulp.task('css-custom-size', function() {
 	return gulp.src(assets.css.files)
-	.pipe(size({
+	.pipe(plugins.size({
 		showFiles: true,
 		title: "css files"
 	}))
 });
 gulp.task('js-libs-size', function() {
 	return gulp.src(assets.js.libs)
-	.pipe(size({
+	.pipe(plugins.size({
 		showFiles: true,
 		title: "js libs"
 	}))
 });
 gulp.task('js-custom-size', function() {
 	return gulp.src(assets.js.files)
-	.pipe(size({
+	.pipe(plugins.size({
 		showFiles: true,
 		title: "js files"
 	}))
@@ -686,42 +461,78 @@ gulp.task('size', function() {
 	);
 });
 
-gulp.task('package-sequence', function() {
+
+gulp.task('build-css-sequence', function(){
 	runSequence(
-		//'css-libs',
+		'css-libs',
 		'css-custom',
 		'css-libs-and-custom',
-		'css-libs-and-custom-min',
-		//'js-libs',
+		'css-libs-and-custom-min'
+	);	
+});
+
+
+gulp.task('build-js-sequence', function(){
+	runSequence(
+		'js-libs',
 		'js-custom',
 		'js-libs-and-custom',
 		'js-libs-and-custom-min'
+	);	
+});
+
+// Used in watch - libraries never change so no need to re-concat and minify
+// libraries in watch
+
+gulp.task('build-css-sequence-no-libs', function(){
+	runSequence(
+		'css-custom',
+		'css-libs-and-custom',
+		'css-libs-and-custom-min'
+	);	
+});
+
+
+gulp.task('build-js-sequence-no-libs', function(){
+	runSequence(
+		'js-custom',
+		'js-libs-and-custom',
+		'js-libs-and-custom-min'
+	);	
+});
+
+
+gulp.task('build-sequence', function() {
+	runSequence(
+		'build-css-sequence',
+		'build-js-sequence'
 	);
 });
 
 
-gulp.task('watch-package-files', function() {
-  gulp.watch(assets.js.files, ['package-sequence']);
-  gulp.watch(assets.css.files, ['package-sequence']);
+
+// Watch 
+gulp.task('build-watch', function() {
+
+	gulp.watch(
+		[assets.js.files], 
+		['build-js-sequence-no-libs']
+	);
+
+	gulp.watch(
+		[assets.css.files], 
+		['build-css-sequence-no-libs']
+	);
 });
 
-defaultTasks.push('package-sequence');
-defaultTasks.push('watch-package-files');
+// Default task run all module tasks in parallel, then do the full package
+// sequence.  The -watch module task watches for changes to assets and rebuilds
+// libs-and-custom
 
-/*
-gulp.task('full-sequence', function() {
-  runSequence(
-    'angular-modules/book1-sass',
-    'package-sequence'
-  );
+gulp.task('default', function() {
+	runSequence(
+		moduleTasks,
+		'build-sequence',
+		'build-watch'
+	);
 });
-*/
-
-/*
-[
-  'full-sequence',
-  //'angular-modules/book1-sequence'
-  //'angular-modules/book1-sass'
-]
-*/
-gulp.task('default', defaultTasks);

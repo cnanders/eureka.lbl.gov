@@ -1,0 +1,93 @@
+/* Background
+----------------------------------------------------------------------------------------*/
+.bg {
+
+	/*
+	background-position:
+		@param horizontal positioning
+			takes effect when viewport width is smaller than background-size
+			*center*: makes clipping occur evenly on left/right
+			*left*
+			*right*
+		@param vertical positioning
+			takes affect when the div height is less than the image height
+			(background-size * img height / img width)
+			*center*
+			*top*
+			*bottom*
+	*/
+
+	color: #fff;
+
+	h1, h2, h3, h4, h5, h6 {
+		color: #eee;
+	}
+	background-color: #555;
+	background-image: image-url("bg/bg-hiroshima-2.jpg");
+	background-repeat: no-repeat;
+	background-size: 768px;
+	background-position: center center;
+
+	padding-top: 50px;
+	padding-bottom: 50px;
+
+	@media only screen and (min-width: 768px){
+		background-size: 992px;
+		padding-top: 100px;
+		padding-bottom: 100px;
+	}
+
+	@media only screen and (min-width: 992px) {
+		background-size: 100%;
+		padding-top: 120px;
+		padding-bottom: 120px;
+	}
+
+	/*
+	@media only screen and (min-width: 62em){
+		background-size: 100%;
+		padding-top: 100px;
+		padding-bottom: 100px;
+		background-position: center center;
+		font-size: 22px;
+	}
+
+	@media only screen and (min-width: 75em){
+		padding-top: 150px;
+		padding-bottom: 150px;
+	}
+	*/
+}
+
+
+.bg.bg-design {
+	background-image: image-url("bg/design-traingle.jpg");
+	background-position: center bottom;
+}
+
+.bg.bg-prague {
+	background-image: image-url("bg/prague.jpg");
+	background-position: center bottom;
+}
+
+
+.bg.bg-hiroshima {
+	background-image: image-url("bg/bg-hiroshima-2.jpg");
+	background-position: center top;
+}
+
+.bg.bg-primary-gradient {
+	/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#2e84b0+0,4baeda+100 */
+	background: #2e84b0; /* Old browsers */
+	background: -moz-linear-gradient(-45deg, #2e84b0 0%, #4baeda 100%); /* FF3.6-15 */
+	background: -webkit-linear-gradient(-45deg, #2e84b0 0%,#4baeda 100%); /* Chrome10-25,Safari5.1-6 */
+	background: linear-gradient(135deg, #2e84b0 0%,#4baeda 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#2e84b0', endColorstr='#4baeda',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+
+	h3.h3-subtle {
+		color: #ccc;
+	}
+	h1 {
+		color: #fff;
+	}
+}
