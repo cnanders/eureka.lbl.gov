@@ -8,7 +8,7 @@ angular.module('app')
 
   	//$logProvider.debugEnabled(false); // Disable $log.debug() method
 
-	$locationProvider.html5Mode(true);
+	//$locationProvider.html5Mode(true);
 
 	$stateProvider
 	.state('app', {
@@ -86,7 +86,9 @@ angular.module('app')
       	}
       	*/
     });
-	$urlRouterProvider.when('/','/home'); // Redirect
-	$urlRouterProvider.when('/proceedings', '/proceedings/2015'); // Redirect
+
+	// Need to use '/' as first arg of when() in HTML5 mode but this/
+	// does not work on Github Pages so I'm using non HTML5 mode
+	$urlRouterProvider.when('','/home'); // Redirect
 	$urlRouterProvider.otherwise('');
 });
